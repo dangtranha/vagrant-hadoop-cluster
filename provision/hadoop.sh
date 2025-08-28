@@ -1,10 +1,26 @@
 #!/bin/bash
+set -ex
+
 su - hadoop-22133012 <<'EOF'
 cd ~
+
+if [ ! -f /shared/hadoop-3.4.1.tar.gz ]; then
+    wget https://dlcdn.apache.org/hadoop/common/hadoop-3.4.1/hadoop-3.4.1.tar.gz -P /shared
+fi
+
+# Setup ssh cho hadoop-22133012
+if [ ! -f ~/.ssh/id_rsa ]; then
+    ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+fi
+
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+
 if [ ! -d hadoop ]; then
-  wget https://dlcdn.apache.org/hadoop/common/hadoop-3.4.1/hadoop-3.4.1.tar.gz
+  cp /shared/hadoop-3.4.1.tar.gz .
   tar -xvzf hadoop-3.4.1.tar.gz
   mv hadoop-3.4.1 hadoop
+
 fi
 
 # Set env
@@ -22,5 +38,5 @@ echo 'export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"' >> ~/.ba
 source ~/.bashrc
 
 # Copy configs
-cp /vagrant/configs/*.xml ~/hadoop/etc/hadoop/
+# cp /vagrant/configs/*.xml ~/hadoop/etc/hadoop/
 EOF
