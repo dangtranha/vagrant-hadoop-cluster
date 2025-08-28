@@ -8,8 +8,25 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-24.04"
   config.vm.box_version = "202508.03.0"
-  config.vm.synced_folder "./shared", "/shared", mount_options: ["dmode=777", "fmode=777"]
 
+  shared_host_folder = File.expand_path("shared", __dir__)
+  Dir.mkdir(shared_host_folder) unless Dir.exist?(shared_host_folder)
+  config.vm.synced_folder "./shared", "/shared", mount_options: ["dmode=777", "fmode=777"]
+  config.vm.synced_folder "./provision/hadoop/configs", "/vagrant/configs" # Do lam ngu nhung luoi lam lai de tam vay thoi:)))
+
+
+  # Hadoop Slave
+  config.vm.define "slave" do |slave|
+    slave.vm.hostname = "hadoop-slave"
+    slave.vm.network "private_network", ip: "192.168.56.20"
+    slave.vm.provider "virtualbox" do |vb|
+      vb.name = "hadoop-slave"
+      vb.memory = 1024
+      vb.cpus = 1
+    end
+    slave.vm.provision "shell", path: "provision/common.sh"
+    slave.vm.provision "shell", path: "provision/hadoop/hadoop_base.sh"
+  end
   # Hadoop Master
   config.vm.define "master" do |master|
     master.vm.hostname = "hadoop-master"
@@ -21,18 +38,9 @@ Vagrant.configure("2") do |config|
       vb.cpus = 2
     end
     # master.vm.provision "shell", path: "provision/common.sh"
+    master.vm.provision "shell", path: "provision/common.sh"
+    master.vm.provision "shell", path: "provision/hadoop/hadoop_base.sh"
+    master.vm.provision "shell", path: "provision/master_format.sh"
   end
-
-  # Hadoop Slave
-  config.vm.define "slave" do |node|
-    node.vm.hostname = "hadoop-slave"       # đúng cú pháp
-    node.vm.network "private_network", ip: "192.168.56.20"
-    node.vm.provider "virtualbox" do |vb|
-      vb.name = "hadoop-slave"
-      vb.memory = 512
-    end
-  end
-  config.vm.provision "shell", path: "provision/common.sh"
-  config.vm.provision "shell", path: "provision/hadoop.sh"
 end
 

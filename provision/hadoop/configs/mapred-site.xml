@@ -1,0 +1,36 @@
+<configuration>
+    <property>
+        <name>mapreduce.application.classpath</name>
+        <value>$HADOOP_MAPRED_HOME/share/hadoop/mapreduce/*:$HADOOP_MAPRED_HOME/share/hadoop/mapreduce/lib/*</value>
+    </property>
+
+    <property>
+        <name>mapreduce.jobtracker.address</name>
+        <value>hadoop-master:9001</value>
+        <description>
+        The host and port that the MapReduce job tracker runs at. If "local", then jobs
+        are run in-process as a single map and reduce task.
+        </description>
+    </property>
+
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+        <description>The framework for running mapreduce jobs</description>
+    </property>
+
+    <property>
+        <name>yarn.app.mapreduce.am.env</name>
+        <value>HADOOP_MAPRED_HOME=/home/hadoop-22133012/hadoop</value>
+    </property>
+
+    <property>
+        <name>mapreduce.map.env</name>
+        <value>HADOOP_MAPRED_HOME=/home/hadoop-22133012/hadoop</value>
+    </property>
+
+    <property>
+        <name>mapreduce.reduce.env</name>
+        <value>HADOOP_MAPRED_HOME=/home/hadoop-22133012/hadoop</value>
+    </property>
+</configuration>
