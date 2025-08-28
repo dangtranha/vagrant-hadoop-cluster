@@ -24,8 +24,8 @@ Vagrant.configure("2") do |config|
       vb.memory = "2048"
       vb.cpus = 2
     end
-    master.vm.provision "shell", path: "provision/common.sh"
-    master.vm.provision "shell", path: "provision/hadoop.sh"
+    # master.vm.provision "shell", path: "provision/common.sh"
+    # master.vm.provision "shell", path: "provision/hadoop.sh"
   end
 
   # Hadoop Slaves
