@@ -34,6 +34,13 @@ fi
 #         ssh-copy-id -o StrictHostKeyChecking=no hadoop-22133012@hadoop-slave
 # fi
 
+if [ "$(hostname)" = "hadoop-master" ]; then
+    if [ ! -d tmp ]; then
+        mkdir tmp
+        chmod 777 tmp
+    fi
+fi
+
 grep -q "JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64" ~/hadoop/etc/hadoop/hadoop-env.sh || \
 echo "export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64" >> ~/hadoop/etc/hadoop/hadoop-env.sh
 

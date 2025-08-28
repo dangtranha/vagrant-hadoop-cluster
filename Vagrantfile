@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
   shared_host_folder = File.expand_path("shared", __dir__)
   Dir.mkdir(shared_host_folder) unless Dir.exist?(shared_host_folder)
   config.vm.synced_folder "./shared", "/shared", mount_options: ["dmode=777", "fmode=777"]
-  config.vm.synced_folder "./provision/hadoop/configs", "/vagrant/configs" # DO lo lam ngu nhung luoi lam lai de tam vay thoi:)))
+  config.vm.synced_folder "./provision/hadoop/configs", "/vagrant/configs" # Do lam ngu nhung luoi lam lai de tam vay thoi:)))
 
 
   # Hadoop Slave
@@ -21,7 +21,8 @@ Vagrant.configure("2") do |config|
     slave.vm.network "private_network", ip: "192.168.56.20"
     slave.vm.provider "virtualbox" do |vb|
       vb.name = "hadoop-slave"
-      vb.memory = 512
+      vb.memory = 1024
+      vb.cpus = 1
     end
     slave.vm.provision "shell", path: "provision/common.sh"
     slave.vm.provision "shell", path: "provision/hadoop/hadoop_base.sh"
@@ -39,7 +40,7 @@ Vagrant.configure("2") do |config|
     # master.vm.provision "shell", path: "provision/common.sh"
     master.vm.provision "shell", path: "provision/common.sh"
     master.vm.provision "shell", path: "provision/hadoop/hadoop_base.sh"
-    master.vm.provision "shell", path: "provision/copy_key_to_slave.sh"
+    master.vm.provision "shell", path: "provision/master_format.sh"
   end
 end
 
