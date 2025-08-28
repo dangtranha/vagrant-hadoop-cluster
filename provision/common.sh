@@ -12,3 +12,6 @@ sudo adduser --disabled-password --gecos "" hadoop-22133012
 echo "hadoop-22133012:dangha12042004" | sudo chpasswd
 sudo usermod -aG sudo hadoop-22133012
 echo "hadoop-22133012 ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+grep -q "192.168.56.10 hadoop-master" /etc/hosts || echo "192.168.56.10 hadoop-master" | sudo tee -a /etc/hosts
+grep -q "192.168.56.20 hadoop-slave" /etc/hosts || echo "192.168.56.20 hadoop-slave" | sudo tee -a /etc/hosts

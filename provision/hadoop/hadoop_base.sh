@@ -23,8 +23,11 @@ if [ ! -d hadoop ]; then
   rm -f hadoop-3.4.1.tar.gz
 fi
 
+grep -q "JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64" ~/hadoop/etc/hadoop/hadoop-env.sh || \
+echo "export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64" >> ~/hadoop/etc/hadoop/hadoop-env.sh
+
 # Set env
-echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> ~/.bashrc
+echo 'export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64' >> ~/.bashrc
 echo 'export HADOOP_HOME=/home/hadoop-22133012/hadoop' >> ~/.bashrc
 echo 'export PATH=$PATH:$HADOOP_HOME/bin' >> ~/.bashrc
 echo 'export PATH=$PATH:$HADOOP_HOME/sbin' >> ~/.bashrc
@@ -36,7 +39,4 @@ echo 'export HADOOP_YARN_HOME=$HADOOP_HOME ' >> ~/.bashrc
 echo 'export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native' >> ~/.bashrc
 echo 'export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"' >> ~/.bashrc
 source ~/.bashrc
-
-# Copy configs
-# cp /vagrant/configs/*.xml ~/hadoop/etc/hadoop/
 EOF
