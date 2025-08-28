@@ -23,8 +23,29 @@ if [ ! -d hadoop ]; then
   rm -f hadoop-3.4.1.tar.gz
 fi
 
+# # Copy key sang slave
+# if [ "$(hostname)" = "hadoop-master" ]; then
+#     # Master → Master
+#     sudo -u hadoop-22133012 ssh-copy-id -i /home/hadoop-22133012/.ssh/id_rsa.pub \
+#         -o StrictHostKeyChecking=no hadoop-22133012@hadoop-master
+
+#     # Master → Slave
+#     sudo -u hadoop-22133012 sshpass -p "dangha12042004" \
+#         ssh-copy-id -o StrictHostKeyChecking=no hadoop-22133012@hadoop-slave
+# fi
+
+if [ "$(hostname)" = "hadoop-master" ]; then
+    if [ ! -d tmp ]; then
+        mkdir tmp
+        chmod 777 tmp
+    fi
+fi
+
+grep -q "JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64" ~/hadoop/etc/hadoop/hadoop-env.sh || \
+echo "export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64" >> ~/hadoop/etc/hadoop/hadoop-env.sh
+
 # Set env
-echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> ~/.bashrc
+echo 'export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64' >> ~/.bashrc
 echo 'export HADOOP_HOME=/home/hadoop-22133012/hadoop' >> ~/.bashrc
 echo 'export PATH=$PATH:$HADOOP_HOME/bin' >> ~/.bashrc
 echo 'export PATH=$PATH:$HADOOP_HOME/sbin' >> ~/.bashrc
@@ -37,6 +58,14 @@ echo 'export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native' >> ~/.bashrc
 echo 'export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"' >> ~/.bashrc
 source ~/.bashrc
 
-# Copy configs
-# cp /vagrant/configs/*.xml ~/hadoop/etc/hadoop/
+cp /vagrant/configs/core-site.xml ~/hadoop/etc/hadoop/
+cp /vagrant/configs/hdfs-site.xml ~/hadoop/etc/hadoop/
+cp /vagrant/configs/yarn-site.xml ~/hadoop/etc/hadoop/
+
+if [ "$(hostname)" = "hadoop-master" ]; then
+    cp /vagrant/configs/mapred-site.xml ~/hadoop/etc/hadoop/
+    cp /vagrant/configs/workers ~/hadoop/etc/hadoop/
+
+fi
+chmod 777 ~/hadoop/etc/hadoop/*.xml
 EOF
