@@ -20,6 +20,7 @@ if [ ! -d hadoop ]; then
   cp /shared/hadoop-3.4.1.tar.gz .
   tar -xvzf hadoop-3.4.1.tar.gz
   mv hadoop-3.4.1 hadoop
+  rm -f hadoop-3.4.1.tar.gz
 fi
 
 # Set env
