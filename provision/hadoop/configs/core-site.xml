@@ -1,13 +1,13 @@
-<configuration> 
-    <property> 
-        <name>fs.defaultFS</name> 
-        <value>hdfs://hadoop-master:9000</value> 
-        <description>Use HDFS as file storage engine</description> 
-    </property> 
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://{{MASTER_HOST}}:9000</value>
+        <description>Use HDFS as file storage engine</description>
+    </property>
     
-    <property> 
-        <name>hadoop.tmp.dir</name> 
-        <value>/home/hadoop-22133012/tmp</value> 
-        <description>Temporary Directory</description> 
-    </property> 
-</configuration> 
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/home/{{USER}}/tmp</value>
+        <description>Temporary Directory</description>
+    </property>
+</configuration>
