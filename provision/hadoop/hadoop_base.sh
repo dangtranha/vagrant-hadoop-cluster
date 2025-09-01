@@ -12,7 +12,6 @@ SLAVE_IP=$(jq -r '.slave.ip' $CONFIG_FILE)
 SLAVE_HOST=$(jq -r '.slave.hostname' $CONFIG_FILE)
 
 
-
 su - $USERNAME <<'EOF'
 cd ~
 
@@ -62,7 +61,6 @@ export HADOOP_OPTS="-Djava.library.path=\$HADOOP_HOME/lib/native"
 EOL
 source ~/.bashrc
 
-#HADOOP_CONF_DIR="/home/$USERNAME/hadoop/etc/hadoop"
 
 # Copy file config Hadoop
 cp /vagrant/configs/core-site.xml ~/hadoop/etc/hadoop
@@ -75,16 +73,6 @@ if [ "$HOSTNAME" = "$MASTER_HOST" ]; then
     cp /vagrant/configs/workers ~/hadoop/etc/hadoop
 fi
 
-
-# # Replace placeholders trực tiếp trong file đã copy
-# for file in core-site.xml hdfs-site.xml yarn-site.xml; do
-#     sed -i -e "s/{{USER}}/$USER/g" \
-#            -e "s/{{MASTER_HOST}}/$MASTER_HOST/g" \
-#            -e "s/{{MASTER_IP}}/$MASTER_IP/g" \
-#            -e "s/{{SLAVE_HOST}}/$SLAVE_HOST/g" \
-#            -e "s/{{SLAVE_IP}}/$SLAVE_IP/g" \
-#            ~/hadoop/etc/hadoop/$file
-# done
 
 chmod 777 ~/hadoop/etc/hadoop/*.xml
 EOF

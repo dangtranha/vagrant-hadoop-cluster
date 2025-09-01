@@ -6,10 +6,10 @@
     
     "master": {
       "ip": "192.168.56.10",
-      "hostname": "hadoop-master"
+      "hostname": "master"
     },
     "slave": {
       "ip": "192.168.56.20",
-      "hostname": "hadoop-slave"
+      "hostname": "slave"
     }
   }
