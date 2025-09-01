@@ -50,7 +50,7 @@ Vagrant.configure("2") do |config|
     end
     master.vm.provision "shell", path: "provision/common.sh"
     master.vm.provision "shell", path: "provision/hadoop/hadoop_base.sh"
-    master.vm.provision "shell", path: "provision/master_format.sh"
     master.vm.provision "shell", path: "provision/hadoop/hadoop_copy.sh"
+    master.vm.provision "shell", path: "provision/hadoop/master_format.sh"
   end
 end
