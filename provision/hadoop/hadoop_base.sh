@@ -32,6 +32,7 @@ if [ ! -f ~/.ssh/id_rsa ]; then
     ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
 fi
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+
 chmod 600 ~/.ssh/authorized_keys
 
 # Tạo thư mục tạm cho master
@@ -47,18 +48,17 @@ grep -q "JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64" ~/hadoop/etc/hadoop/h
 echo "export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64" >> ~/hadoop/etc/hadoop/hadoop-env.sh
 
 # Thêm biến môi trường vào bashrc
-cat <<EOL >> ~/.bashrc
-export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64
-export HADOOP_HOME=\$HOME/hadoop
-export PATH=\$PATH:\$HADOOP_HOME/bin:\$HADOOP_HOME/sbin
-export HADOOP_MAPRED_HOME=\$HADOOP_HOME
-export HADOOP_COMMON_HOME=\$HADOOP_HOME
-export HADOOP_HDFS_HOME=\$HADOOP_HOME
-export HADOOP_CONF_DIR=\$HADOOP_HOME/etc/hadoop
-export HADOOP_YARN_HOME=\$HADOOP_HOME
-export HADOOP_COMMON_LIB_NATIVE_DIR=\$HADOOP_HOME/lib/native
-export HADOOP_OPTS="-Djava.library.path=\$HADOOP_HOME/lib/native"
-EOL
+echo 'export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64' >> ~/.bashrc
+echo "export HADOOP_HOME=/home/$USER/hadoop" >> ~/.bashrc
+echo 'export PATH=$PATH:$HADOOP_HOME/bin' >> ~/.bashrc
+echo 'export PATH=$PATH:$HADOOP_HOME/sbin' >> ~/.bashrc
+echo 'export HADOOP_MAPRED_HOME=$HADOOP_HOME' >> ~/.bashrc
+echo 'export HADOOP_COMMON_HOME=$HADOOP_HOME' >> ~/.bashrc
+echo 'export HADOOP_HDFS_HOME=$HADOOP_HOME' >> ~/.bashrc
+echo 'export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop' >> ~/.bashrc
+echo 'export HADOOP_YARN_HOME=$HADOOP_HOME ' >> ~/.bashrc
+echo 'export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native' >> ~/.bashrc
+echo 'export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"' >> ~/.bashrc
 source ~/.bashrc
 
 
@@ -71,6 +71,7 @@ cp /vagrant/configs/yarn-site.xml ~/hadoop/etc/hadoop
 if [ "$HOSTNAME" = "$MASTER_HOST" ]; then
     cp /vagrant/configs/mapred-site.xml ~/hadoop/etc/hadoop
     cp /vagrant/configs/workers ~/hadoop/etc/hadoop
+    dos2unix $HADOOP_HOME/etc/hadoop/workers
 fi
 
 
