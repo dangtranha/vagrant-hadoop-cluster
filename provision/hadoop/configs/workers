@@ -1,2 +1,2 @@
-hadoop-master  # tuy trong huong dan cua thay khong co nhung neu khong co hadoop-master thi khi start se khong co Datanode Nodemanager
-hadoop-slave
+{{MASTER_HOST}}
+{{SLAVE_HOST}}
