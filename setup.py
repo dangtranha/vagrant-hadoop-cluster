@@ -72,7 +72,7 @@ config = {
     }
 }
 with open("clustering_config.json", "w") as f:
-    json.dump(config, f, indent=2)
+    json.dump(config, f, indent=2)  
 print("Đang khởi động Vagrant...\n")
 
 try:

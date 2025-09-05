@@ -33,4 +33,8 @@
         <name>yarn.resourcemanager.admin.address</name> 
         <value>{{MASTER_HOST}}:9006</value> 
     </property> 
+    <property> 
+        <name>yarn.resourcemanager.hostname</name> 
+        <value>{{MASTER_HOST}}</value> 
+    </property>
 </configuration>
