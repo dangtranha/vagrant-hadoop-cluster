@@ -23,6 +23,6 @@ sshpass -p "$PASSWORD" ssh-copy-id -i ~/.ssh/id_rsa.pub -o StrictHostKeyChecking
 # Format Namenode (chỉ trên Master)
 HOSTNAME=\$(hostname)
 if [ "\$HOSTNAME" = "$MASTER_HOST" ]; then
-    ~/hadoop/bin/hdfs namenode -format -force
+    ~/hadoop/bin/hdfs namenode -format
 fi
 EOF

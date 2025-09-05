@@ -1,6 +1,8 @@
 #!/bin/bash
 set -ex
 
+
+sudo apt remove -y appstream
 apt-get update -y
 apt-get install -y openjdk-11-jdk ssh pdsh wget sshpass jq dos2unix
 

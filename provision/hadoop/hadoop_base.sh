@@ -67,12 +67,16 @@ cp /vagrant/configs/core-site.xml ~/hadoop/etc/hadoop
 cp /vagrant/configs/hdfs-site.xml ~/hadoop/etc/hadoop
 cp /vagrant/configs/yarn-site.xml ~/hadoop/etc/hadoop
 
+if [ "$HOSTNAME" = "$SLAVE_HOST" ]; then
+    cp /vagrant/configs/slave/mapred-site.xml ~/hadoop/etc/hadoop
+fi
 
 if [ "$HOSTNAME" = "$MASTER_HOST" ]; then
-    cp /vagrant/configs/mapred-site.xml ~/hadoop/etc/hadoop
+    cp /vagrant/configs/master/mapred-site.xml ~/hadoop/etc/hadoop
     cp /vagrant/configs/workers ~/hadoop/etc/hadoop
     dos2unix $HADOOP_HOME/etc/hadoop/workers
 fi
+
 
 
 chmod 777 ~/hadoop/etc/hadoop/*.xml
