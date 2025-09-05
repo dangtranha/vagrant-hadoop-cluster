@@ -1,14 +1,14 @@
 {
   "user": {
-    "username": "dangha12042004",
+    "username": "hadoop-22133012",
     "password": "dangha12042004"
   },
   "master": {
     "ip": "192.168.56.10",
-    "hostname": "master-hadoop"
+    "hostname": "hadoop-master"
   },
   "slave": {
     "ip": "192.168.56.20",
-    "hostname": "slave-hadoop"
+    "hostname": "hadoop-slave"
   }
 }

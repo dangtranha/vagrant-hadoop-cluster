@@ -43,6 +43,8 @@ Vagrant.configure("2") do |config|
     master.vm.network "private_network", ip: master_ip
     master.vm.network "forwarded_port", guest: 9870, host: 9870
     master.vm.network "forwarded_port", guest: 8088, host: 8088
+    master.vm.network "forwarded_port", guest: 9004, host: 9004
+
     master.vm.provider "virtualbox" do |vb|
       vb.name = master_host
       vb.memory = 2048
