@@ -44,7 +44,7 @@ collections = ["tmdb_movies", "tmdb_director", "movie_profit"]
 for coll in collections:
     print(f" Đang xử lý {coll}...")
 
-    df = spark.read.parquet(f"hdfs://master-2213039:9000/movies/{coll}")
+    df = spark.read.parquet(f"hdfs://master-2213039:9000/movies/{coll}") # Đổi tên hostname lại 
 
     if coll == "tmdb_movies":
         # rating -> int
