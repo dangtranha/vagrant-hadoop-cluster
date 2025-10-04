@@ -65,6 +65,7 @@ Vagrant.configure("2") do |config|
     # master.vm.provision "mongodb", type: "shell", path: "provision/mongodb/mongodb.sh"
     # master.vm.provision "spark", type: "shell", path: "provision/spark/spark.sh"
     # master.vm.provision "scrapy", type: "shell", path: "provision/scrapy/scrapy.sh"
+    
     master.vm.provision "shell", path: "provision/mongodb/mongodb.sh"
     master.vm.provision "shell", path: "provision/spark/spark.sh"
     master.vm.provision "shell", path: "provision/scrapy/scrapy.sh"
