@@ -1,6 +1,5 @@
 #!/bin/bash
 set -ex
-
 CONFIG_FILE="/vagrant/clustering_config.json"
 
 # Đọc thông tin từ JSON
