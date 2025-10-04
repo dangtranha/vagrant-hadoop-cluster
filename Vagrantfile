@@ -1,10 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# All Vagrant configuration is done below. The "2" in Vagrant.configure
-# configures the configuration version (we support older styles for
-# backwards compatibility). Please don't change it unless you know what
-# you're doing.
 require 'json'
 config_data = JSON.parse(File.read("clustering_config.json"))
 
@@ -14,14 +10,20 @@ slave_ip    = config_data["slave"]["ip"]
 slave_host  = config_data["slave"]["hostname"]
 
 Vagrant.configure("2") do |config|
-
   config.vm.box = "bento/ubuntu-24.04"
   config.vm.box_version = "202508.03.0"
+  config.vm.synced_folder ".", "/vagrant"
+
 
   shared_host_folder = File.expand_path("shared", __dir__)
   Dir.mkdir(shared_host_folder) unless Dir.exist?(shared_host_folder)
   config.vm.synced_folder "./shared", "/shared", mount_options: ["dmode=777", "fmode=777"]
   config.vm.synced_folder "./provision/hadoop/configs", "/vagrant/configs"
+  config.vm.synced_folder "./provision/scrapy/movie_scraper", "/home/vagrant/movie_scraper"
+  config.vm.synced_folder "./provision/spark", "/vagrant/cleandata"
+
+
+
 
   # Hadoop Slave
   config.vm.define "slave" do |slave|
@@ -41,6 +43,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "master" do |master|
     master.vm.hostname = master_host
     master.vm.network "private_network", ip: master_ip
+
     master.vm.network "forwarded_port", guest: 2181, host: 2181
     master.vm.network "forwarded_port", guest: 9870, host: 9870
     master.vm.network "forwarded_port", guest: 8088, host: 8088
@@ -58,6 +61,13 @@ Vagrant.configure("2") do |config|
     master.vm.provision "shell", path: "provision/hadoop/hadoop_base.sh"
     master.vm.provision "shell", path: "provision/hadoop/hadoop_copy.sh"
     master.vm.provision "shell", path: "provision/hadoop/master_format.sh"
+
+    # master.vm.provision "mongodb", type: "shell", path: "provision/mongodb/mongodb.sh"
+    # master.vm.provision "spark", type: "shell", path: "provision/spark/spark.sh"
+    # master.vm.provision "scrapy", type: "shell", path: "provision/scrapy/scrapy.sh"
+    master.vm.provision "shell", path: "provision/mongodb/mongodb.sh"
+    master.vm.provision "shell", path: "provision/spark/spark.sh"
+    master.vm.provision "shell", path: "provision/scrapy/scrapy.sh"
     master.vm.provision "shell", path: "provision/hive/hive_base.sh"
     master.vm.provision "shell", path: "provision/hive/derby_base.sh"
     # master.vm.provision "shell", path: "provision/hive/create_metastore.sh"
