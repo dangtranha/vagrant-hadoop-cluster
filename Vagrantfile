@@ -41,9 +41,13 @@ Vagrant.configure("2") do |config|
   config.vm.define "master" do |master|
     master.vm.hostname = master_host
     master.vm.network "private_network", ip: master_ip
+    master.vm.network "forwarded_port", guest: 2181, host: 2181
     master.vm.network "forwarded_port", guest: 9870, host: 9870
     master.vm.network "forwarded_port", guest: 8088, host: 8088
+    master.vm.network "forwarded_port", guest: 8047, host: 8047
     master.vm.network "forwarded_port", guest: 9004, host: 9004
+    master.vm.network "forwarded_port", guest: 10000, host: 10000
+
 
     master.vm.provider "virtualbox" do |vb|
       vb.name = master_host
@@ -54,5 +58,8 @@ Vagrant.configure("2") do |config|
     master.vm.provision "shell", path: "provision/hadoop/hadoop_base.sh"
     master.vm.provision "shell", path: "provision/hadoop/hadoop_copy.sh"
     master.vm.provision "shell", path: "provision/hadoop/master_format.sh"
+    master.vm.provision "shell", path: "provision/hive/hive_base.sh"
+    master.vm.provision "shell", path: "provision/hive/derby_base.sh"
+    # master.vm.provision "shell", path: "provision/hive/create_metastore.sh"
   end
 end
