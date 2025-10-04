@@ -10,4 +10,25 @@
         <value>/home/{{USER}}/tmp</value>
         <description>Temporary Directory</description>
     </property>
+
+    <property>
+        <name>hadoop.proxyuser.{{USER}}.groups</name>
+        <value>*</value>
+    </property>
+
+    <property>
+        <name>hadoop.proxyuser.{{USER}}.hosts</name>
+        <value>*</value>
+    </property>
+
+    <property>
+        <name>hadoop.proxyuser.server.hosts</name>
+        <value>*</value>
+    </property>
+
+    <property>
+        <name>hadoop.proxyuser.server.groups</name>
+        <value>*</value>
+    </property>
+
 </configuration>

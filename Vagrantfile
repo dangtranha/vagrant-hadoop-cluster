@@ -44,10 +44,13 @@ Vagrant.configure("2") do |config|
     master.vm.hostname = master_host
     master.vm.network "private_network", ip: master_ip
 
-    # Auto-correct để tránh xung đột port khi chạy nhiều cluster
-    master.vm.network "forwarded_port", guest: 9870, host: 9870, auto_correct: true
-    master.vm.network "forwarded_port", guest: 8088, host: 8088, auto_correct: true
-    master.vm.network "forwarded_port", guest: 9004, host: 9004, auto_correct: true
+    master.vm.network "forwarded_port", guest: 2181, host: 2181
+    master.vm.network "forwarded_port", guest: 9870, host: 9870
+    master.vm.network "forwarded_port", guest: 8088, host: 8088
+    master.vm.network "forwarded_port", guest: 8047, host: 8047
+    master.vm.network "forwarded_port", guest: 9004, host: 9004
+    master.vm.network "forwarded_port", guest: 10000, host: 10000
+
 
     master.vm.provider "virtualbox" do |vb|
       vb.name = master_host
@@ -65,5 +68,8 @@ Vagrant.configure("2") do |config|
     master.vm.provision "shell", path: "provision/mongodb/mongodb.sh"
     master.vm.provision "shell", path: "provision/spark/spark.sh"
     master.vm.provision "shell", path: "provision/scrapy/scrapy.sh"
+    master.vm.provision "shell", path: "provision/hive/hive_base.sh"
+    master.vm.provision "shell", path: "provision/hive/derby_base.sh"
+    # master.vm.provision "shell", path: "provision/hive/create_metastore.sh"
   end
 end
