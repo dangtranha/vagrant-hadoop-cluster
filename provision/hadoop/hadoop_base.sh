@@ -44,11 +44,11 @@ if [ "$HOSTNAME" = "$MASTER_HOST" ]; then
 fi
 
 # Thiết lập Hadoop environment
-grep -q "JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64" ~/hadoop/etc/hadoop/hadoop-env.sh || \
-echo "export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64" >> ~/hadoop/etc/hadoop/hadoop-env.sh
+grep -q "JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64" ~/hadoop/etc/hadoop/hadoop-env.sh || \
+echo "export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64" >> ~/hadoop/etc/hadoop/hadoop-env.sh
 
 # Thêm biến môi trường vào bashrc
-echo 'export JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64' >> ~/.bashrc
+echo 'export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64' >> ~/.bashrc
 echo "export HADOOP_HOME=/home/$USER/hadoop" >> ~/.bashrc
 echo 'export PATH=$PATH:$HADOOP_HOME/bin' >> ~/.bashrc
 echo 'export PATH=$PATH:$HADOOP_HOME/sbin' >> ~/.bashrc
