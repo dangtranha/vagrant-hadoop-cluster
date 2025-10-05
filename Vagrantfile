@@ -47,7 +47,10 @@ Vagrant.configure("2") do |config|
     master.vm.network "forwarded_port", guest: 2181, host: 2181
     master.vm.network "forwarded_port", guest: 9870, host: 9870
     master.vm.network "forwarded_port", guest: 8088, host: 8088
+    master.vm.network "forwarded_port", guest: 8080, host: 8080
+    master.vm.network "forwarded_port", guest: 8081, host: 8081
     master.vm.network "forwarded_port", guest: 8047, host: 8047
+    master.vm.network "forwarded_port", guest: 9083, host: 9083
     master.vm.network "forwarded_port", guest: 9004, host: 9004
     master.vm.network "forwarded_port", guest: 10000, host: 10000
 
@@ -65,12 +68,13 @@ Vagrant.configure("2") do |config|
     # master.vm.provision "mongodb", type: "shell", path: "provision/mongodb/mongodb.sh"
     # master.vm.provision "spark", type: "shell", path: "provision/spark/spark.sh"
     # master.vm.provision "scrapy", type: "shell", path: "provision/scrapy/scrapy.sh"
-    
+
     master.vm.provision "shell", path: "provision/mongodb/mongodb.sh"
-    master.vm.provision "shell", path: "provision/spark/spark.sh"
-    master.vm.provision "shell", path: "provision/scrapy/scrapy.sh"
+    # master.vm.provision "shell", path: "provision/spark/spark.sh"
+    # master.vm.provision "shell", path: "provision/scrapy/scrapy.sh"
     master.vm.provision "shell", path: "provision/hive/hive_base.sh"
     master.vm.provision "shell", path: "provision/hive/derby_base.sh"
-    # master.vm.provision "shell", path: "provision/hive/create_metastore.sh"
+    master.vm.provision "shell", path: "provision/hive/create_metastore.sh", name: "create_metastore"
+    master.vm.provision "shell", path: "provision/hive/trino_db.sh", name: "trinodb"
   end
 end
