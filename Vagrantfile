@@ -49,6 +49,7 @@ Vagrant.configure("2") do |config|
     master.vm.network "forwarded_port", guest: 8088, host: 8088
     master.vm.network "forwarded_port", guest: 8080, host: 8080
     master.vm.network "forwarded_port", guest: 8081, host: 8081
+    master.vm.network "forwarded_port", guest: 8088, host: 8088 # superset
     master.vm.network "forwarded_port", guest: 8047, host: 8047
     master.vm.network "forwarded_port", guest: 9083, host: 9083
     master.vm.network "forwarded_port", guest: 9004, host: 9004
@@ -58,7 +59,7 @@ Vagrant.configure("2") do |config|
     master.vm.provider "virtualbox" do |vb|
       vb.name = master_host
       vb.memory = 2048
-      vb.cpus = 2
+      vb.cpus = 6
     end
     master.vm.provision "shell", path: "provision/common.sh"
     master.vm.provision "shell", path: "provision/hadoop/hadoop_base.sh"
@@ -74,7 +75,11 @@ Vagrant.configure("2") do |config|
     # master.vm.provision "shell", path: "provision/scrapy/scrapy.sh"
     master.vm.provision "shell", path: "provision/hive/hive_base.sh"
     master.vm.provision "shell", path: "provision/hive/derby_base.sh"
-    master.vm.provision "shell", path: "provision/hive/create_metastore.sh", name: "create_metastore"
-    master.vm.provision "shell", path: "provision/hive/trino_db.sh", name: "trinodb"
+    master.vm.provision "shell", path: "provision/hive/dril_base.sh"
+
+    # master.vm.provision "shell", path: "provision/hive/create_metastore.sh", name: "create_metastore"
+    # master.vm.provision "shell", path: "provision/superset/superset.sh", name: "superset"
+    
+    # master.vm.provision "shell", path: "provision/hive/trino_db.sh", name: "trinodb"
   end
 end

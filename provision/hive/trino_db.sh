@@ -21,7 +21,7 @@ mkdir -p $SHARED_DIR
 #!/bin/bash
 set -ex
 
-su - hadoop-22133012 <<'EOF'
+su - $USERNAME <<'EOF'
 cd ~
 
 # Tải Trino nếu chưa có
@@ -68,7 +68,7 @@ node.data-dir=trino/data
 EOC
 
 cat > trino/etc/catalog/hive.properties <<EOC
-connector.name=hive
+connector.name=hive-hadoop2
 hive.metastore.uri=thrift://hadoop-master:9083
 hive.config.resources=/home/$USERNAME/hadoop/etc/hadoop/core-site.xml,/home/$USERNAME/hadoop/etc/hadoop/hdfs-site.xml
 EOC
