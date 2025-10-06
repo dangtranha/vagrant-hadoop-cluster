@@ -14,6 +14,11 @@ SLAVE_HOST=$(jq -r '.slave.hostname' $CONFIG_FILE)
 
 
 su - $USERNAME <<EOF
+
+if [ ! -f /shared/flask_hdfs_ui_copy.tar.gz ]; then
+    wget -O /shared/flask_hdfs_ui_copy.tar.gz "https://www.dropbox.com/scl/fi/mdc1pg4foiw3lqejywfc7/flask_hdfs_ui_copy.tar.gz?rlkey=6sciqw1fa436ot2q5c8q36w97&st=6hhqt15n&dl=1"
+fi
+
 if [ ! -d ~/flask_hdfs_ui ]; then
     cp /shared/flask_hdfs_ui_copy.tar.gz ~
     tar -xvzf ~/flask_hdfs_ui_copy.tar.gz -C ~
