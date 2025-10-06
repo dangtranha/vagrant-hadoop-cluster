@@ -11,25 +11,38 @@ MASTER_HOST=$(jq -r '.master.hostname' $CONFIG_FILE)
 SLAVE_IP=$(jq -r '.slave.ip' $CONFIG_FILE)
 SLAVE_HOST=$(jq -r '.slave.hostname' $CONFIG_FILE)
 
-sudo -u $USERNAME bash <<EOF
+USER_HOME="/home/$USERNAME"
+
+su - $USERNAME <<'EOF'
 set -ex
-/home/$USERNAME/hadoop/sbin/start-all.sh
 
-# Chuẩn bị thư mục HDFS cho Hive
-hdfs dfs -mkdir -p /tmp
-hdfs dfs -mkdir -p /user/hive/warehouse
-hdfs dfs -chmod 777 /tmp
-hdfs dfs -chmod 777 /user/hive/warehouse
+HADOOP_HOME="$HOME/hadoop"
+HIVE_HOME="$HOME/hive"
+METASTORE_DB="$HIVE_HOME/metastore_db"
 
-# Cấp quyền thư mục Hive local
-chmod -R 777 \$HIVE_HOME
+echo ">>> Running as: $(whoami)"
+echo ">>> HOME = $HOME"
+echo ">>> Hive home = $HIVE_HOME"
 
-# Khởi tạo Metastore (Derby)
-\$HIVE_HOME/bin/schematool -dbType derby -initSchema --verbose || true
+# Start Hadoop
+"$HADOOP_HOME/sbin/start-all.sh"
 
-# Cấp quyền metastore
-chmod -R 777 \$HIVE_HOME/metastore_db/ || true
+# Prepare HDFS directories
+"$HADOOP_HOME/bin/hdfs" dfs -mkdir -p /tmp /user/hive/warehouse
+"$HADOOP_HOME/bin/hdfs" dfs -chmod 777 /tmp /user/hive/warehouse
 
-# Khởi động HiveServer2 trong nền, ghi log để debug
-nohup \$HIVE_HOME/bin/hiveserver2 > /home/$USERNAME/hiveserver2.log 2>&1 &
+echo "Checking existing schema..."
+cd "$HIVE_HOME"
+if "$HIVE_HOME/bin/schematool" -dbType derby -info >/dev/null 2>&1; then
+    echo "Schema already initialized → skip init"
+else
+    echo "Schema not found → initializing..."
+    rm -rf "$METASTORE_DB"
+    "$HIVE_HOME/bin/schematool" -initSchema -dbType derby \
+        --url "jdbc:derby:$METASTORE_DB;create=true" \
+        --verbose
+    chmod -R 777 "$METASTORE_DB"
+fi
+
+nohup "$HIVE_HOME/bin/hiveserver2" >/dev/null 2>&1 &
 EOF
