@@ -73,5 +73,6 @@ Vagrant.configure("2") do |config|
     master.vm.provision "shell", path: "provision/hive/derby_base.sh"
     master.vm.provision "shell", path: "provision/hive/create_metastore.sh", name: "create_metastore"
     master.vm.provision "shell", path: "provision/webHDFS/webHDFS.sh", name: "webHDFS"
+    master.vm.provision "shell", path: "provision/start-all-service.sh", run: "always", name: "start_all_service"
   end
 end
