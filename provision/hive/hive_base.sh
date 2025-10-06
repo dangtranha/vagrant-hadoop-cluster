@@ -45,4 +45,5 @@ echo 'export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HIVE_HOME/bin' >> ~/
 echo 'export CLASSPATH=$CLASSPATH:$HADOOP_HOME/lib/*:.:$HIVE_HOME/lib/*:.' >> ~/hive/conf/hive-env.sh
 chmod +x ~/hive/conf/hive-env.sh
 chmod 777 ~/hive/
+
 EOF

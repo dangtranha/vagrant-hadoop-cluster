@@ -22,9 +22,6 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "./provision/scrapy/movie_scraper", "/home/vagrant/movie_scraper"
   config.vm.synced_folder "./provision/spark", "/vagrant/cleandata"
 
-
-
-
   # Hadoop Slave
   config.vm.define "slave" do |slave|
     slave.vm.hostname = slave_host
@@ -59,7 +56,7 @@ Vagrant.configure("2") do |config|
     master.vm.provider "virtualbox" do |vb|
       vb.name = master_host
       vb.memory = 2048
-      vb.cpus = 6
+      vb.cpus = 2
     end
     master.vm.provision "shell", path: "provision/common.sh"
     master.vm.provision "shell", path: "provision/hadoop/hadoop_base.sh"
@@ -75,7 +72,7 @@ Vagrant.configure("2") do |config|
     # master.vm.provision "shell", path: "provision/scrapy/scrapy.sh"
     master.vm.provision "shell", path: "provision/hive/hive_base.sh"
     master.vm.provision "shell", path: "provision/hive/derby_base.sh"
-    master.vm.provision "shell", path: "provision/hive/dril_base.sh"
+    master.vm.provision "shell", path: "provision/hive/drill_base.sh"
 
     # master.vm.provision "shell", path: "provision/hive/create_metastore.sh", name: "create_metastore"
     # master.vm.provision "shell", path: "provision/superset/superset.sh", name: "superset"

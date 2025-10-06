@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+
+  <property>
+    <name>javax.jdo.option.ConnectionURL</name>
+    <value>jdbc:derby:;databaseName=metastore_db;create=true</value>
+    <description>Metastore Derby database connection URL</description>
+  </property>
+
+  <property>
+    <name>javax.jdo.option.ConnectionDriverName</name>
+    <value>org.apache.derby.jdbc.EmbeddedDriver</value>
+    <description>JDBC driver for Derby</description>
+  </property>
+
+  <property>
+    <name>datanucleus.autoCreateSchema</name>
+    <value>true</value>
+    <description>Automatically create schema in Derby</description>
+  </property>
+
+  <property>
+    <name>hive.metastore.warehouse.dir</name>
+    <value>/user/hive/warehouse</value>
+    <description>Default location for Hive tables</description>
+  </property>
+
+  <property>
+    <name>mapreduce.framework.name</name>
+    <value>local</value>
+    <description>Use local MapReduce execution</description>
+  </property>
+
+  <property>
+    <name>hive.exec.mode.local.auto</name>
+    <value>true</value>
+    <description>Enable Hive local mode automatically</description>
+  </property>
+
+  <property>
+    <name>hive.cli.print.header</name>
+    <value>true</value>
+    <description>Print column headers in CLI</description>
+  </property>
+
+  <property>
+    <name>hive.cli.print.current.db</name>
+    <value>true</value>
+    <description>Show current database in CLI prompt</description>
+  </property>
+
+</configuration>
