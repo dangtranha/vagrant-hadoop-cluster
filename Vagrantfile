@@ -62,10 +62,6 @@ Vagrant.configure("2") do |config|
     master.vm.provision "shell", path: "provision/hadoop/hadoop_base.sh"
     master.vm.provision "shell", path: "provision/hadoop/hadoop_copy.sh"
     master.vm.provision "shell", path: "provision/hadoop/master_format.sh"
-
-    # master.vm.provision "mongodb", type: "shell", path: "provision/mongodb/mongodb.sh"
-    # master.vm.provision "spark", type: "shell", path: "provision/spark/spark.sh"
-    # master.vm.provision "scrapy", type: "shell", path: "provision/scrapy/scrapy.sh"
     master.vm.provision "shell", path: "provision/mongodb/mongodb.sh"
     master.vm.provision "shell", path: "provision/spark/spark.sh"
     master.vm.provision "shell", path: "provision/scrapy/scrapy.sh"
@@ -76,3 +72,5 @@ Vagrant.configure("2") do |config|
     master.vm.provision "shell", path: "provision/start-all-service.sh", run: "always", name: "start_all_service"
   end
 end
+
+
