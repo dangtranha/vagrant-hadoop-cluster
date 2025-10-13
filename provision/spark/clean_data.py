@@ -1,99 +1,83 @@
-from pyspark.sql import SparkSession
-from pyspark.sql import functions as F
-from pyspark.sql.types import DoubleType, IntegerType, DateType
-import re
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-# =============================
-# 1. Khởi tạo SparkSession
-# =============================
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, explode, regexp_replace
+
+# ========================
+# Khởi tạo Spark
+# ========================
 spark = SparkSession.builder \
-    .appName("CleanMoviesData") \
+    .appName("Clean Movie Data") \
     .getOrCreate()
 
-# =============================
-# 2. Hàm tiện ích
-# =============================
+# ========================
+# Đọc dữ liệu JSON từ HDFS
+# ========================
+movie_profit_path = "hdfs:///data/movie_profit"
+director_path     = "hdfs:///data/tmdb_director"
+movies_path       = "hdfs:///data/tmdb_movies"
 
-def clean_money(col):
-    """Chuyển tiền tệ dạng '$123,456' hoặc '-' thành số (int/float)"""
-    return F.when(
-        (F.col(col).isNull()) | (F.col(col) == "-"), None
-    ).otherwise(
-        F.regexp_replace(F.col(col), "[$,]", "").cast(DoubleType())
-    )
+df_profit   = spark.read.json(movie_profit_path)
+df_director = spark.read.json(director_path)
+df_movies   = spark.read.json(movies_path)
 
-def parse_release_date(col):
-    """
-    Tách '09/19/2025 (VN)' thành (date, country).
-    """
-    return (
-        F.regexp_extract(F.col(col), r"(\d{2}/\d{2}/\d{4})", 1).alias("release_date"),
-        F.regexp_extract(F.col(col), r"\((\w+)\)", 1).alias("release_country")
-    )
+# ========================
+# Xử lý Profit
+# ========================
+df_profit_clean = df_profit.select(
+    col("movie_name").alias("title"),
+    col("worldwide")
+)
 
-def clean_unicode(col):
-    """Loại bỏ escape unicode kiểu \\u00f1 -> ñ"""
-    return F.regexp_replace(col, r"\\u[0-9a-fA-F]{4}", "")
+df_profit_clean = df_profit_clean.withColumn(
+    "revenue",
+    regexp_replace(col("worldwide"), "[$,]", "").cast("long")
+).drop("worldwide")
 
-# =============================
-# 3. Làm sạch từng dataset
-# =============================
+# ========================
+# Xử lý Director
+# ========================
+df_director_clean = df_director.select(
+    col("director_name"),
+    explode("credits").alias("credit")
+).select(
+    col("director_name"),
+    col("credit.title").alias("title")
+)
 
-collections = ["tmdb_movies", "tmdb_director", "movie_profit"]
+# ========================
+# Xử lý Movies
+# ========================
+df_movies_clean = df_movies.select(
+    col("title"),
+    col("rating").cast("float")
+)
 
-for coll in collections:
-    print(f" Đang xử lý {coll}...")
+# ========================
+# Xuất CSV riêng
+# ========================
+df_profit_clean.write.mode("overwrite").option("header", True).csv("hdfs:///cleandata_csv/clean_profit")
+df_director_clean.write.mode("overwrite").option("header", True).csv("hdfs:///cleandata_csv/clean_director")
+df_movies_clean.write.mode("overwrite").option("header", True).csv("hdfs:///cleandata_csv/clean_movies")
 
-    df = spark.read.parquet(f"hdfs://master-2213039:9000/movies/{coll}") # Đổi tên hostname lại 
+# ========================
+# Tạo CSV tổng hợp
+# ========================
+df_combined = df_movies_clean.join(df_profit_clean, on="title", how="left") \
+                             .join(df_director_clean, on="title", how="left") \
+                             .select(
+                                 col("title"),
+                                 col("rating"),
+                                 col("revenue"),
+                                 col("director_name")
+                             ) \
+                             .dropDuplicates(['title'])  # bỏ tất cả dòng trùng nhau dựa trên title
 
-    if coll == "tmdb_movies":
-        # rating -> int
-        df = df.withColumn("rating", F.col("rating").cast(IntegerType()))
+df_combined.write.mode("overwrite").option("header", True).csv("hdfs:///data/cleandata/combined_movies")
 
-        # release_date -> date + country
-        release_date, release_country = parse_release_date("release_date")
-        df = df.withColumn("release_date_clean", F.to_date(release_date, "MM/dd/yyyy")) \
-               .withColumn("release_country", release_country)
-
-        # budget -> float
-        df = df.withColumn("budget_clean", clean_money("budget"))
-
-        # keywords -> chuỗi
-        df = df.withColumn("keywords_str", F.concat_ws(", ", F.col("keywords")))
-
-        df_clean = df.dropDuplicates()
-
-    elif coll == "tmdb_director":
-        # làm sạch text unicode
-        df = df.withColumn("director_name", clean_unicode("director_name")) \
-               .withColumn("place_of_birth", F.when(F.col("place_of_birth") == "-", None).otherwise(F.col("place_of_birth"))) \
-               .withColumn("known_for", F.lower(F.col("known_for")))
-
-        # credits.year -> int/null, chỉ giữ year và title
-        df = df.withColumn(
-            "credits",
-            F.expr("""
-                transform(credits, x -> named_struct(
-                    'year', CASE WHEN x.year = '—' THEN null ELSE x.year END,
-                    'title', x.title
-                ))
-            """)
-        )
-
-        df_clean = df.dropDuplicates()
-
-    elif coll == "movie_profit":
-        df = df.withColumn("domestic_clean", clean_money("domestic")) \
-               .withColumn("international_clean", clean_money("international")) \
-               .withColumn("worldwide_clean", clean_money("worldwide"))
-
-        df_clean = df.dropDuplicates()
-
-    # =============================
-    # 4. Ghi kết quả ra HDFS
-    # =============================
-    output_path = f"hdfs://master-2213039:9000/movies_clean/{coll}"
-    df_clean.write.mode("overwrite").parquet(output_path)
-    print(f" Đã lưu {coll} sạch tại {output_path}")
-
+# ========================
+# Kết thúc Spark
+# ========================
 spark.stop()
+print("Đã xuất 3 file CSV riêng + 1 file CSV tổng hợp lên HDFS thành công (đã loại bỏ trùng).")

@@ -1,0 +1,10 @@
+{
+  "/data/data_mapreduce/directors_revenue_summary": "cu",
+  "/data/data_mapreduce/Top_15_movies_with_revenue_more_than_100_million": "Top 15 Bộ Phim Có Doanh Thu Hơn 100 Triệu Đô La",
+  "/data/data_mapreduce/Top_17_movies_with_highest": "Top 17 Bộ Phim Ăn Khách Nhất",
+  "/data/data_mapreduce/Top_20_Movies_by_Rating": "Top 20 Bộ Phim Được Đánh Giá Cao Nhất",
+  "/data/data_mapreduce/Top_5_directors_by_average_revenue": "Top 5 Đạo Diễn Có Doanh Thu Trung Bình Cao Nhất",
+  "/data/data_mapreduce/director_no_revenue": "Một Số Các Đạo Diễn Không Doanh Thu",
+  "/data/data_mapreduce/director_revenue_temp": "Một Số Doanh Thu Của Các Đạo Diễn",
+  "/data/data_mapreduce/director_total_revenue": "Tổng Hợp Doanh Thu Của Các Đạo Diễn"
+}

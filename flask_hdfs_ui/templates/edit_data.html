@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chỉnh sửa {{file}}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="bg">
+    <div class="container">
+        <h2>✏️ Chỉnh sửa: {{file}}</h2>
+        <form method="POST">
+            <textarea name="csv_data" rows="20" cols="100">{{ df.to_csv(index=False) }}</textarea>
+            <input type="hidden" name="file" value="{{file}}">
+            <button type="submit" class="btn save">💾 Lưu thay đổi</button>
+        </form>
+        <a href="/" class="btn">⬅️ Quay lại</a>
+    </div>
+</body>
+</html>
+

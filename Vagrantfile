@@ -21,6 +21,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "./provision/hadoop/configs", "/vagrant/configs"
   config.vm.synced_folder "./provision/scrapy/movie_scraper", "/home/vagrant/movie_scraper"
   config.vm.synced_folder "./provision/spark", "/vagrant/cleandata"
+  config.vm.synced_folder "./flask_hdfs_ui", "/home/hadoopminhnhat/flask_hdfs_ui"
 
   # Hadoop Slave
   config.vm.define "slave" do |slave|
@@ -66,9 +67,10 @@ Vagrant.configure("2") do |config|
     # master.vm.provision "mongodb", type: "shell", path: "provision/mongodb/mongodb.sh"
     # master.vm.provision "spark", type: "shell", path: "provision/spark/spark.sh"
     # master.vm.provision "scrapy", type: "shell", path: "provision/scrapy/scrapy.sh"
-    master.vm.provision "shell", path: "provision/mongodb/mongodb.sh"
-    master.vm.provision "shell", path: "provision/spark/spark.sh"
-    master.vm.provision "shell", path: "provision/scrapy/scrapy.sh"
+    master.vm.provision "shell", path: "provision/mongodb/mongodb.sh", name: "mongodb"
+    master.vm.provision "shell", path: "provision/scrapy/scrapy.sh", name: "scrapy"
+    master.vm.provision "shell", path: "provision/spark/spark.sh", name: "spark"
+    
     master.vm.provision "shell", path: "provision/hive/hive_base.sh"
     master.vm.provision "shell", path: "provision/hive/derby_base.sh"
     master.vm.provision "shell", path: "provision/hive/create_metastore.sh", name: "create_metastore"
