@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 NAMENODE_HOST = "http://192.168.56.10:9870"
-USER = "hadoop22133039"
+USER = "hadoop"
 
 # ------------------------------
 # 🔹 HÀM XỬ LÝ HDFS
@@ -92,7 +92,6 @@ def view_data():
             try:
                 raw_data = read_hdfs_csv(path)
 
-                # Chỉ đọc tối đa 200 dòng đầu tiên để tránh quá tải
                 lines = raw_data.strip().split("\n")[:200]
                 csv_data = "\n".join(lines)
 

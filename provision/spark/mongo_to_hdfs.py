@@ -21,7 +21,7 @@ for coll in collections:
     df.show(5, truncate=False)
 
     # Ghi ra HDFS (dạng json)
-    output_path = f"hdfs://master-2213039:9000/data/{coll}"
+    output_path = f"hdfs://master:9000/data/{coll}"
     df.write.mode("overwrite").json(output_path)
 
     print(f" Đã lưu {coll} vào {output_path}")
