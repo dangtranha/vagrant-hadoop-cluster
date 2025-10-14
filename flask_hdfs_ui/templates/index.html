@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <meta charset="UTF-8">
+    <title>🎬 Movie Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        /* 🌌 NỀN */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: radial-gradient(ellipse at center, #0b0b22 0%, #000 100%);
+            background-attachment: fixed;
+            color: white;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+        .header {
+            text-align: center;
+            padding: 25px 10px;
+            background: linear-gradient(90deg, rgba(78,199,241,0.9), rgba(142,68,173,0.9));
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            box-shadow: 0 0 20px rgba(78,199,241,0.3);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 42px;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 10px #4ec7f1, 0 0 20px #8e44ad;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+        }
+        .header p {
+            margin-top: 6px;
+            color: #f0f0f0;
+            font-size: 15px;
+        }
+        .controls {
+            text-align: center;
+            margin: 25px 0;
+        }
+        select, button {
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: none;
+            font-size: 15px;
+            margin-left: 5px;
+        }
+        button {
+            background: linear-gradient(90deg, #4ec7f1, #8e44ad);
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #8e44ad, #4ec7f1);
+        }
+        .table-container {
+            width: 80%;
+            margin: 20px auto;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(6px);
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background: rgba(78,199,241,0.3);
+        }
+        tr:nth-child(even) {
+            background: rgba(255,255,255,0.05);
+        }
+        a.btn-view {
+            text-decoration: none;
+            background: linear-gradient(90deg, #4ec7f1, #8e44ad);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+        .edit-section {
+            width: 80%;
+            margin: 30px auto;
+            background: rgba(255,255,255,0.08);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(8px);
+        }
+        textarea {
+            width: 100%;
+            height: 220px;
+            border-radius: 8px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            color: white;
+            background: rgba(0,0,0,0.6);
+        }
+        .btn-save, .toggle-data {
+            background: linear-gradient(90deg, #4ec7f1, #8e44ad);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 15px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .btn-save:hover, .toggle-data:hover {
+            background: linear-gradient(90deg, #8e44ad, #4ec7f1);
+        }
+        .chart-container {
+            width: 75%;
+            margin: 40px auto;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            padding: 25px 30px;
+            box-shadow: 0 0 25px rgba(78,199,241,0.8);
+            text-align: center;
+            backdrop-filter: blur(6px);
+        }
+        canvas {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+        }
+        .hidden {
+            display: none;
+        }
+        .chart-title-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            width: 60%;
+            padding: 8px;
+            border-radius: 8px;
+            border: none;
+            text-align: center;
+            font-size: 16px;
+        }
+        .save-btn {
+            padding: 8px 12px;
+            background: #00bcd4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .save-btn:hover {
+            background: #008c9e;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎬 Movie Analysis</h1>
+        <p>Khám phá dữ liệu HDFS một cách trực quan và sinh động</p>
+    </div>
+
+    <div class="controls">
+        <form method="get" action="/view_data">
+            <label>📁 Chọn thư mục HDFS:</label>
+            <select name="path">
+                {% for folder in folders %}
+                    <option value="{{ folder }}" {% if folder == current_path %}selected{% endif %}>{{ folder }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="action" value="list">🔍 Xem dữ liệu</button>
+        </form>
+        <p>📌 <b>Đường dẫn hiện tại:</b> {{ current_path }}</p>
+    </div>
+
+    {% if files  and action !="open"%}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Tên File</th>
+                    <th>Kích thước (byte)</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                <tr>
+                    <td>{{ file.pathSuffix }}</td>
+                    <td>{{ file.length }}</td>
+                    <td><a href="/view_data?path={{ current_path }}/{{ file.pathSuffix }}&action=open" class="btn-view">📄 Mở</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+{% if csv_data is defined %}
+<div class="edit-section">
+    <h2>🧾 Dữ liệu CSV</h2>
+    <button type="button" class="toggle-data" onclick="toggleCSV()">👁️ Hiện / Ẩn dữ liệu</button>
+    <form method="post" action="/save_csv">
+        <textarea id="csv-content" name="csv_content" class="hidden">{{ csv_data }}</textarea>
+        <input type="hidden" name="path" value="{{ current_path }}">
+        <!-- <button type="submit" class="btn-save">💾 Ghi lại lên HDFS</button> -->
+    </form>
+</div>
+{% endif %}  <!-- ✅ đóng khối dữ liệu CSV -->
+
+
+{% if chart_type %}
+<div class="chart-container">
+    <form method="post" action="/update_title" class="chart-title-container">
+        <input type="hidden" name="path" value="{{ current_path }}">
+        <input type="text" name="chart_title" placeholder="Nhập tiêu đề biểu đồ..." value="{{ title }}">
+        <button type="submit" class="save-btn">💾 Lưu tên biểu đồ</button>
+    </form>
+
+    <h2 id="chartTitle">{{ title }}</h2>
+
+    <!-- ✅ ECharts container -->
+    <div id="chart" style="width: 90%; height: 500px; margin: 0 auto;"></div>
+    <p><i>Chú thích: Biểu đồ thể hiện dữ liệu phân tích từ HDFS.</i></p>
+</div>
+
+<!-- ✅ ECharts script -->
+<script>
+    const chartDom = document.getElementById('chart');
+    const myChart = echarts.init(chartDom, null, { renderer: 'canvas' });
+
+    const labels = {{ labels | tojson }};
+    const values = {{ values | tojson }};
+    const chartType = "{{ chart_type }}";
+    const title = "{{ title }}";
+
+    let option;
+
+    if (chartType === "bar") {
+        option = {
+            title: {
+                text: title,
+                left: 'center',
+                textStyle: { color: '#fff', fontSize: 20 }
+            },
+            tooltip: { trigger: 'axis' },
+            xAxis: {
+                type: 'category',
+                data: labels,
+                axisLabel: { rotate: 25, color: '#fff' }
+            },
+            yAxis: { type: 'value', axisLabel: { color: '#fff' } },
+            series: [{
+                data: values,
+                type: 'bar',
+                itemStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: '#4ec7f1' },
+                        { offset: 1, color: '#8e44ad' }
+                    ])
+                }
+            }],
+            backgroundColor: 'transparent'
+        };
+    } else {
+        option = {
+            title: {
+                text: title,
+                left: 'center',
+                textStyle: { color: '#fff', fontSize: 20 }
+            },
+            tooltip: { trigger: 'item' },
+            legend: { bottom: 10, textStyle: { color: '#fff' } },
+            series: [{
+                type: 'pie',
+                radius: '65%',
+                data: labels.map((label, i) => ({ name: label, value: values[i] })),
+                itemStyle: {
+                    borderRadius: 8,
+                    borderColor: '#000',
+                    borderWidth: 2
+                },
+                label: {
+                    color: '#fff',
+                    formatter: '{b}: {c}'
+                }
+            }],
+            backgroundColor: 'transparent'
+        };
+    }
+
+    myChart.setOption(option);
+    window.addEventListener('resize', () => myChart.resize());
+</script>
+{% endif %}
+
+
+<script>
+    function toggleCSV() {
+        const txt = document.getElementById('csv-content');
+        txt.classList.toggle('hidden');
+    }
+</script>
+
+</body>
+</html>
+

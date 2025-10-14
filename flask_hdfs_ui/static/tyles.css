@@ -1,0 +1,60 @@
+body {
+  background: url('/static/galaxy-bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Poppins', sans-serif;
+  color: white;
+  text-align: center;
+}
+
+.container {
+  background: rgba(0, 0, 0, 0.6);
+  margin: 5% auto;
+  padding: 30px;
+  border-radius: 20px;
+  width: 80%;
+  box-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+
+h1 {
+  font-size: 3em;
+  color: #FFD700;
+  margin-bottom: 20px;
+}
+
+h2 {
+  margin-top: 30px;
+  color: #90EE90;
+}
+
+.btn {
+  background: linear-gradient(45deg, #1E90FF, #00CED1);
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  margin: 5px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn:hover {
+  transform: scale(1.1);
+  background: linear-gradient(45deg, #00BFFF, #20B2AA);
+}
+
+.connect-btn {
+  background: linear-gradient(45deg, #FF69B4, #FF1493);
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin: 10px 0;
+  background: rgba(255,255,255,0.1);
+  padding: 10px;
+  border-radius: 8px;
+}
+

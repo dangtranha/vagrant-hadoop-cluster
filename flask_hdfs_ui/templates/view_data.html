@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Xem dữ liệu {{file}}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="bg">
+    <div class="container">
+        <h2>📊 Xem dữ liệu: {{file}}</h2>
+        <div class="table-container">
+            {{ df.to_html(classes="data-table", index=False) | safe }}
+        </div>
+        <a href="/" class="btn">⬅️ Quay lại</a>
+    </div>
+</body>
+</html>
+
