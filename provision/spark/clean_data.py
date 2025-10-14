@@ -74,7 +74,7 @@ df_combined = df_movies_clean.join(df_profit_clean, on="title", how="left") \
                              ) \
                              .dropDuplicates(['title'])  # bỏ tất cả dòng trùng nhau dựa trên title
 
-df_combined.write.mode("overwrite").option("header", True).csv("hdfs:///data/cleandata/combined_movies")
+df_combined.write.mode("overwrite").option("header", True).csv("hdfs:///data/cleandata_csv/combined_movies")
 
 # ========================
 # Kết thúc Spark
