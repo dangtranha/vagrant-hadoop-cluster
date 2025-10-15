@@ -20,9 +20,9 @@ for coll in collections:
     # Show để kiểm tra
     df.show(5, truncate=False)
 
-    # Ghi ra HDFS (dạng Parquet)
-    output_path = f"hdfs://master:9000/movies/{coll}"
-    df.write.mode("overwrite").parquet(output_path)
+    # Ghi ra HDFS (dạng json)
+    output_path = f"hdfs://master:9000/data/{coll}"
+    df.write.mode("overwrite").json(output_path)
 
     print(f" Đã lưu {coll} vào {output_path}")
 
